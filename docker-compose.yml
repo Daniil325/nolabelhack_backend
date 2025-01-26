@@ -24,19 +24,6 @@ services:
       - net
     restart: always
 
-  client:
-    build: 
-      context: .
-      dockerfile: Dockerfile.client
-    container_name: example_name_client
-    ports: 
-     - '3000:3000'
-    volumes:
-      - /src
-      - /app/node_modules
-    stdin_open: true
-    tty: true
-
 volumes:
   postgres-data:
   minio_data:
