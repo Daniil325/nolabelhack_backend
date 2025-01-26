@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres:
-    container_name: example_name
+    container_name: nolabel_db
     image: postgres:15
     restart: always
     env_file: ./backend/.env
@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: example_name_backend
+    container_name: nolabel_backend
     ports:
       - '8000:8000'
     networks:
