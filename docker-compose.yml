@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  postgres:
+    container_name: example_name
+    image: postgres:15
+    restart: always
+    env_file: ./backend/.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - net
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: example_name_backend
+    ports:
+      - '8000:8000'
+    networks:
+      - net
+    restart: always
+
+  client:
+    build: 
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: example_name_client
+    ports: 
+     - '3000:3000'
+    volumes:
+      - /src
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres-data:
+  minio_data:
+
+networks:
+  net:
