@@ -5,7 +5,7 @@ from uuid import UUID
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.infra.protocols import AbstractSQLRepository
+from infra.protocols import AbstractSQLRepository
 
 T = TypeVar("T")
 

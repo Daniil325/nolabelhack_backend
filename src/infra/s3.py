@@ -9,7 +9,7 @@ import aiohttp
 import imgspy
 from miniopy_async import Minio, S3Error
 
-from backend.infra.protocols import ImageStorage
+from infra.protocols import ImageStorage
 
 
 @dataclass
