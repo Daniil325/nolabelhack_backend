@@ -1,12 +1,11 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
+from src.presentation.routers import index_router
+from src.presentation.routers import user_router
+from src.presentation.routers import vote_router
 
 app = FastAPI()
-router = APIRouter()
 
 
-@router.get("/")
-async def get_exapmle():
-    return {"gooool": "example"}
-
-
-app.include_router(router)
+app.include_router(index_router.router)
+app.include_router(user_router.router, prefix="/user")
+app.include_router(vote_router.router, prefix="/vote")
