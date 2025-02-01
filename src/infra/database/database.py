@@ -1,44 +1,36 @@
-from typing import Any, Generic, TypeVar
+from typing import Any, AsyncGenerator, Generic, TypeVar
 import uuid
 from uuid import UUID
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
 
-from sqlalchemy import delete, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from infra.protocols import AbstractSQLRepository
+from src.infra.protocols import AbstractSQLRepository
+from src.settings import settings
 
 T = TypeVar("T")
 
 
-class SqlHelper(AbstractSQLRepository[T]):
+class Database:
+    _instance = None
+    _connection: AsyncSession
 
-    def __init__(self, session: AsyncSession, model):
-        self.session = session
-        self.model = model
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.init_db()
+
+        return cls._instance
+
+    def init_db(self):
+        self.engine = create_async_engine(settings.db_settings.db_url)
+        self._connection = async_sessionmaker(self.engine, expire_on_commit=False)
+
+    async def get_session(self) -> AsyncSession:
+        return self._connection()
+
+
+class SqlHelper(AbstractSQLRepository[T]):
 
     @staticmethod
     def new_id() -> UUID:
         return uuid.uuid4()
-
-    async def get_all(self) -> list[T]:
-        stmt = select(self.model)
-        return (await self.session.execute(stmt)).scalars()
-
-    async def get_by_id(self, id: UUID) -> T | None:
-        stmt = select(T).where(T.id == id)
-        return (await self.session.execute(stmt)).scalar_one_or_none()
-
-    async def create(self, item: T) -> None:
-        self.session.add(item)
-        await self.session.commit()
-
-    async def update(self, changes: dict[str, Any], id: UUID) -> None:
-        stmt = update(T).where(self.model.id == id).values(**changes)
-        self.session.execute(stmt)
-        await self.session.commit()
-
-    async def delete(self, id: UUID) -> None:
-        stmt = delete(T).where(T.id == id)
-        self.session.execute(stmt)
-        await self.session.commit()
         
