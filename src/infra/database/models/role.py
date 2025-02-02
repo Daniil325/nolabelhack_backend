@@ -1,12 +1,13 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import UUID, Column, String, Text
 from sqlalchemy.orm import relationship
 from src.infra.database.models.base import Base
  
  
 class Role(Base):
-     name = Column(String(50), unique=True, nullable=False)
+     name = Column(String(50), unique=True)
      description = Column(Text)
+     resource_id = Column(UUID)
 
-     
-     user = relationship("User", back_populates="role")
+
+     users = relationship("UserRole", back_populates="role")
      permission = relationship("RolePermission", back_populates="role")
