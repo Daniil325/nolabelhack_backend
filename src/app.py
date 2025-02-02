@@ -1,11 +1,13 @@
 from fastapi import FastAPI
-from src.presentation.routers import index_router
-from src.presentation.routers import user_router
-from src.presentation.routers import vote_router
-
-app = FastAPI()
+from src.presentation.routers import api_router
+from dishka.integrations.fastapi import setup_dishka
+from src.infra.di import container
 
 
-app.include_router(index_router.router)
-app.include_router(user_router.router, prefix="/user")
-app.include_router(vote_router.router, prefix="/vote")
+def create_app():
+    app: FastAPI = FastAPI()
+    app.include_router(api_router)
+
+    setup_dishka(container, app)
+
+    return app
