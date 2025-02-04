@@ -14,3 +14,8 @@ class UserCreate(schemas.BaseUserCreate):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+class UserRead(schemas.BaseUser):
+    first_name: str | None
+    last_name: str | None
+    

@@ -2,10 +2,11 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class ResponseSchema(BaseModel):
+class BaseResponseSchema(BaseModel):
     success: bool
     message: Optional[str] = ""
 
-class ResponseAuthSchema(ResponseSchema):
+class ResponseAuthSchema(BaseResponseSchema):
     access_token: Optional[str] = None
     refresh_token: Optional[str] = None
+    

@@ -25,7 +25,7 @@ class AbstractSQLRepository(Generic[T], Protocol):
     async def create(self, item: T) -> T | None:
         self.session.add(item)
         await self.session.commit()
-        self.session.refresh(item)
+        await self.session.refresh(item)
         return item
 
     async def update(self, changes: dict[str, Any], id: UUID) -> None:
