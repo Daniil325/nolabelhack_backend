@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 from humps import camelize
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -44,7 +44,7 @@ Model = TypeVar('Model', bound=ModelResponseItem)
 
 
 class ModelResponse(SuccessResponse, Generic[Model]):
-    item: Model
+    item: Optional[Model]
 
 
 Item = TypeVar('Item', bound=BaseModel)

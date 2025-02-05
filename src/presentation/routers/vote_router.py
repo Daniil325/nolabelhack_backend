@@ -1,5 +1,6 @@
+from uuid import UUID
 from dishka.integrations.fastapi import FromDishka, DishkaRoute
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from src.infra.database.reader import VoteReader
 from src.presentation.schemas.base import ListResponse, ModelResponse
@@ -21,8 +22,16 @@ async def get_vote_list(reader: FromDishka[VoteReader]):
 
 
 @router.get(path="/{id}", response_model=ModelResponse[VoteSchema])
-async def get_vote_by_id(id: str, reader: FromDishka[VoteReader]):
-    return await reader.fetch_one(id)
+async def get_vote_by_id(id: UUID, reader: FromDishka[VoteReader]):
+    items = await reader.fetch_one(id)
+
+    if not items["item"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Object with ID: {id} not found",
+        )
+
+    return items
 
 
 @router.post(path="/")
@@ -36,10 +45,10 @@ async def add_vote(vote: VoteSchemaAdd, cmd: FromDishka[CreateVoteCommand]):
 
 
 @router.put("/{id}")
-async def edit_vote(id: str, update: VoteSchema, cmd: FromDishka[UpdateVoteCommand]):
+async def edit_vote(id: UUID, update: VoteSchema, cmd: FromDishka[UpdateVoteCommand]):
     return await cmd(id=id, update_obj=dict(**update.model_dump(exclude_unset=True)))
 
 
 @router.delete("/{id}")
-async def delete_vote(id: str, cmd: FromDishka[DeleteVoteCommand]):
+async def delete_vote(id: UUID, cmd: FromDishka[DeleteVoteCommand]):
     return await cmd(id)
