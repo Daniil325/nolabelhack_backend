@@ -38,12 +38,12 @@ class AbstractSQLRepository(Generic[T], Protocol):
         stmt = delete(self.model).where(self.model.id == id)
         await self.session.execute(stmt)
         await self.session.commit()
-        
+
     @staticmethod
     def new_id() -> UUID:
         return uuid.uuid4()
-        
-        
+
+
 class ImageStorage(ABC):
 
     @abstractmethod

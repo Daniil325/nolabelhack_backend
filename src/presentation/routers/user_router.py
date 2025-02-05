@@ -32,7 +32,7 @@ async def user_login(
 @router.post("/registration", response_model=BaseResponseSchema)
 @inject
 async def user_registration(
-    user: UserCreate, 
+    user: UserCreate,
     auth_service: FromDishka[AuthService]
 ):
     user_model = User(

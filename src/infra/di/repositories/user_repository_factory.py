@@ -5,6 +5,6 @@ from src.infra.database.models.user import User
 
 
 class UserRepositoryFactory(Provider):
-    @provide(scope=Scope.APP)
+    @provide(scope=Scope.REQUEST)
     async def get_user_repository(self, session: AsyncSession) -> UserRepository:
         return UserRepository(session=session, model=User)

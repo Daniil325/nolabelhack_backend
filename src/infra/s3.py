@@ -35,7 +35,8 @@ def secure_filename(filename: str) -> str:
         if sep:
             filename = filename.replace(sep, " ")
 
-    normalized_filename = _filename_ascii_strip_re.sub("", "_".join(filename.split()))
+    normalized_filename = _filename_ascii_strip_re.sub(
+        "", "_".join(filename.split()))
     filename = str(normalized_filename).strip("._")
     return filename
 
