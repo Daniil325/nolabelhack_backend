@@ -5,6 +5,6 @@ from src.usecases.security_service import SecurityService
 
 
 class AuthServiceFactory(Provider):
-    @provide(scope=Scope.APP)
+    @provide(scope=Scope.REQUEST)
     async def get_auth_service(self, repository: UserRepository, security_service: SecurityService) -> AuthService:
         return AuthService(repository, security_service)

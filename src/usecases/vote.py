@@ -15,7 +15,7 @@ class CreateVoteDto:
     end_date: datetime
     is_active: bool
     created_at: datetime = datetime.now().replace(tzinfo=None)
-    
+
 
 @dataclass
 class CreateVoteCommand:
@@ -35,22 +35,21 @@ class CreateVoteCommand:
         )
         await self.vote_repo.create(vote)
         return identity
-    
+
 
 @dataclass
 class UpdateVoteCommand:
     vote_repo: VoteRepository
-    
+
     async def __call__(self, id: UUID, update_obj: dict[str, Any]) -> str:
         await self.vote_repo.update(update_obj, id)
         return id
-    
-    
+
+
 @dataclass
 class DeleteVoteCommand:
     vote_repo: VoteRepository
-    
+
     async def __call__(self, id: UUID) -> str:
         await self.vote_repo.delete(id)
         return id
-        

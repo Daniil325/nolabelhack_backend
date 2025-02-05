@@ -5,8 +5,6 @@ from src.infra.database.repository.answer_repository import AnswerRepository
 
 
 class AnswerRepositoryFactory(Provider):
-    scope = Scope.REQUEST
-
-    @provide
+    @provide(scope=Scope.REQUEST)
     async def get_answer_repository(self, session: AsyncSession) -> AnswerRepository:
         return AnswerRepository(session=session)

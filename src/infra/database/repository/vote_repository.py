@@ -5,6 +5,6 @@ from src.infra.protocols import AbstractSQLRepository
 
 
 class VoteRepository(AbstractSQLRepository):
-    
+
     def __init__(self, session: AsyncSession):
         super().__init__(session, Vote)
