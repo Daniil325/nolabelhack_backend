@@ -27,6 +27,7 @@ class AbstractSQLRepository(Generic[T], Protocol):
         self.session.add(item)
         await self.session.commit()
         await self.session.refresh(item)
+        return item
 
     async def update(self, changes: dict[str, Any], id: UUID) -> None:
         stmt = update(self.model).where(self.model.id == id).values(**changes)
