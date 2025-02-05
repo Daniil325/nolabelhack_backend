@@ -28,12 +28,11 @@ services:
 
   node1:
     build:
-      context: ./src/blockchain
+      context: .
       dockerfile: Dockerfile.blockchain
     container_name: blockchain_node1
     ports:
       - "5001:5000"
-    command: python blockchain.py
     environment:
       - PORT=5000
     networks:
@@ -42,12 +41,11 @@ services:
 
   node2:
     build:
-      context: ./src/blockchain
+      context: .
       dockerfile: Dockerfile.blockchain
     container_name: blockchain_node2
     ports:
       - "5002:5000"
-    command: python blockchain.py
     environment:
       - PORT=5000
     networks:
@@ -56,12 +54,11 @@ services:
 
   node3:
     build:
-      context: ./src/blockchain
+      context: .
       dockerfile: Dockerfile.blockchain
     container_name: blockchain_node3
     ports:
       - "5003:5000"
-    command: python blockchain.py
     environment:
       - PORT=5000
     networks:
