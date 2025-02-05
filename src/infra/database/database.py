@@ -1,9 +1,7 @@
-from typing import Any, AsyncGenerator, Generic, TypeVar
-import uuid
-from uuid import UUID
+from typing import Any, TypeVar
+
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
 
-from src.infra.protocols import AbstractSQLRepository
 from src.settings import settings
 
 T = TypeVar("T")
@@ -26,11 +24,3 @@ class Database:
 
     async def get_session(self) -> AsyncSession:
         return self._connection()
-
-
-class SqlHelper(AbstractSQLRepository[T]):
-
-    @staticmethod
-    def new_id() -> UUID:
-        return uuid.uuid4()
-        
