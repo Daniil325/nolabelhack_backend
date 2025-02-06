@@ -35,6 +35,7 @@ services:
       - "5001:5000"
     environment:
       - PORT=5000
+      - NODE_NAME=node1
     networks:
       - net
     restart: always
@@ -48,6 +49,7 @@ services:
       - "5002:5000"
     environment:
       - PORT=5000
+      - NODE_NAME=node2
     networks:
       - net
     restart: always
@@ -61,6 +63,7 @@ services:
       - "5003:5000"
     environment:
       - PORT=5000
+      - NODE_NAME=node3
     networks:
       - net
     restart: always
