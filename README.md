@@ -4,3 +4,4 @@
 2) открыть папку проекта через терминал или в любом редакторе кода
 3) прописать в терминале ```docker-compose up --build```
 4) после выполнения команды перейдите по ссылке [http://localhost:8000/docs](http://localhost:8000/docs)
+5) чтобы запустить frontend, перейдите [сюда](https://github.com/Daniil325/nolabelhack_frontend)
