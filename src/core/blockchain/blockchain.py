@@ -1,9 +1,8 @@
 import datetime
 import hashlib
 import json
-import os
-import pickle
 import logging
+
 import requests
 from ecdsa import VerifyingKey, NIST256p
 
@@ -18,7 +17,6 @@ class Blockchain:
         self.chain = []
         self.mempool = []
         self.nodes = set()
-        self.load_chain()
         if not self.chain:
             self.create_block(proof=1, previous_hash="0")
 
@@ -32,7 +30,6 @@ class Blockchain:
         }
         self.mempool.clear()
         self.chain.append(block)
-        self.save_chain()
         logger.info(f"Block created: {block}")
         return block
 
@@ -75,23 +72,6 @@ class Blockchain:
         self.nodes.add(address)
         logger.info(f"Node added: {address}")
 
-    def save_chain(self):
-        try:
-            with open(self.FILE_NAME, "wb") as f:
-                pickle.dump(self.chain, f)
-            logger.info("Blockchain saved successfully")
-        except Exception as e:
-            logger.error(f"Ошибка сохранения блокчейна: {e}")
-
-    def load_chain(self):
-        if os.path.exists(self.FILE_NAME):
-            try:
-                with open(self.FILE_NAME, "rb") as f:
-                    self.chain = pickle.load(f)
-                logger.info("Blockchain loaded successfully")
-            except Exception as e:
-                logger.error(f"Ошибка загрузки блокчейна: {e}")
-
     def verify_signature(self, voter_id, vote_id, answer_id, signature, public_key):
         message = f"{voter_id}{vote_id}{answer_id}".encode()
         try:
@@ -102,6 +82,7 @@ class Blockchain:
             return False
 
     def sync_chain(self):
+        logger.info(f"Starting sync. Known nodes: {self.nodes}")
         try:
             for node in self.nodes:
                 try:
@@ -109,8 +90,9 @@ class Blockchain:
                     if response.status_code == 200:
                         new_chain = response.json()["chain"]
                         if len(new_chain) > len(self.chain) and self.validate_chain(new_chain):
+                            logger.info(f"Replacing chain. Old length: {len(self.chain)}, New length: {len(new_chain)}")
                             self.chain = new_chain
-                            self.save_chain()
+                            logger.info(f"New chain set. Current length: {len(self.chain)}")
                             logger.info(f"Chain synchronized with node: {node}")
                 except requests.exceptions.RequestException as e:
                     logger.warning(f"Failed to sync with node {node}: {e}")

@@ -1,47 +1,41 @@
-from fastapi import FastAPI
+import os
 import threading
 import time
-from routes import router
-import os
-from blockchain import Blockchain
-import requests
+
 import uvicorn
+from fastapi import FastAPI
+
+from blockchain import Blockchain, logger
+from routes import create_router
 
 app = FastAPI()
+blockchain = Blockchain()
+router = create_router(blockchain)
+
 app.include_router(router)
 
-blockchain = Blockchain()
+
 
 def init_nodes():
-    node_name = os.getenv("NODE_NAME", "")
-    known_nodes = {
-        "node1": "5000",
-        "node2": "5000",
-        "node3": "5000",
-    }
+    time.sleep(5)
+    known_nodes_env = os.getenv("KNOWN_NODES", "")
+    known_nodes = set(known_nodes_env.split(",")) if known_nodes_env else set()
+    logger.info(f"Known nodes: {known_nodes}")
 
-    if node_name in known_nodes:
-        del known_nodes[node_name]
-
-    for node, port in known_nodes.items():
-        url = f"http://{node}:{port}/add_node"  # Используем имя сервиса
-        print(f"Пытаюсь подключиться к: {url}")
-
-        try:
-            response = requests.post(url, json={"node": f"{node}:{port}"})
-            if response.status_code == 200:
-                print(f"Узел {node} успешно добавлен")
-            else:
-                print(f"Не удалось добавить узел {node}, код статуса: {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            print(f"Не удалось подключиться к узлу {node} по адресу {url}, ошибка: {e}")
-
+    for node in known_nodes:
+        blockchain.add_node(node)
 
 @app.on_event("startup")
 def startup_event():
-    time.sleep(5)
-    threading.Thread(target=lambda: [time.sleep(10), blockchain.sync_chain()], daemon=True).start()
     threading.Thread(target=init_nodes, daemon=True).start()
+    threading.Thread(target=auto_sync, daemon=True).start()
+
+
+def auto_sync():
+    while True:
+        blockchain.sync_chain()
+        time.sleep(10)
+
 
 app.include_router(router)
 
